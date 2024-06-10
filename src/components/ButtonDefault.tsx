@@ -1,6 +1,5 @@
 import { Button } from "@material-tailwind/react";
 import { ButtonDefaultProps } from "../services/types/components-types/ButtonType";
-import { ComponentPropsWithoutRef, PropsWithChildren } from 'react';
 
 // Doc Composant Bouton :
 
@@ -10,24 +9,17 @@ import { ComponentPropsWithoutRef, PropsWithChildren } from 'react';
 // - Le composant accepte également tous les attributs html d'un <button> : onClick, type:'submit', etc...
 // - Utiliser la props "className" uniquement pour les autres cas de figure.
 
-type Variant = 'primary' | 'secondary' | 'tertiary' | 'delete' | 'disabled';
-
-type ButtonDefaultProps = ComponentPropsWithoutRef<'button'> &
-  PropsWithChildren<{
-    variant?: Variant;
-  }>;
-
 export default function ButtonDefault({
   children,
-  variant = 'primary',
+  variant = "primary",
   className,
   type,
-  onClick
+  onClick,
 }: ButtonDefaultProps) {
   let buttonTheme;
   switch (variant) {
     default:
-      buttonTheme = 'bg-orangeDP text-darkBlueDP hover:bg-darkOrangeDP';
+      buttonTheme = "bg-orangeDP text-darkBlueDP hover:bg-darkOrangeDP";
       break;
     case "secondary":
       buttonTheme =
@@ -37,12 +29,12 @@ export default function ButtonDefault({
       buttonTheme =
         "bg-darkBlueDP text-orangeDP underline underline-offset-4 hover:bg-mediumBlueDP";
       break;
-    case 'delete':
-      buttonTheme = 'bg-redDP text-white hover:bg-darkRedDP';
+    case "delete":
+      buttonTheme = "bg-redDP text-white hover:bg-darkRedDP";
       break;
-    case 'disabled':
+    case "disabled":
       buttonTheme =
-        'bg-orangeDP text-darkBlueDP active:opacity-40 focus:opacity-40 opacity-40 cursor-not-allowed';
+        "bg-orangeDP text-darkBlueDP active:opacity-40 focus:opacity-40 opacity-40 cursor-not-allowed";
       break;
   }
 

@@ -1,20 +1,18 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Input, Typography } from '@material-tailwind/react';
-import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
-import * as yup from 'yup';
-import ButtonDefault from '../../components/ButtonDefault';
-import { loginUser } from '../../services/api/user';
-import { LoginForm } from '../../services/interfaces/LoginForm';
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Input, Typography } from "@material-tailwind/react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import ButtonDefault from "../../components/ButtonDefault";
+import { loginUser } from "../../services/api/auth";
+import { LoginForm } from "../../services/interfaces/LoginForm";
 
 const dataSchema = yup.object({
   email: yup
     .string()
     .email("Votre e-mail n'est pas valide")
-    .required('Ce champ est obligatoire'),
-  password: yup.string().required('Ce champ est obligatoire !!')
-
-  //   checkbox: yup.boolean()
+    .required("Ce champ est obligatoire"),
+  password: yup.string().required("Ce champ est obligatoire !!"),
 });
 
 export default function Login() {
@@ -23,22 +21,16 @@ export default function Login() {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm<LoginForm>({
-    // defaultValues: {
-    //   email: '',
-    //   password: ''
-    //   // checkbox: false,
-    // },
-    resolver: yupResolver(dataSchema)
+    resolver: yupResolver(dataSchema),
   });
 
-  //console.log(errors);
   const onSubmit = async (values: LoginForm): Promise<any> => {
     const { token } = await loginUser(values);
     if (token) {
-      localStorage.setItem('authToken', token);
-      navigate('/events');
+      localStorage.setItem("authToken", token);
+      navigate("/events");
     }
   };
 
@@ -54,7 +46,7 @@ export default function Login() {
               <h2 className="mb-3 flex justify-center">Connexion</h2>
               <div className="mb-1 flex flex-col gap-3">
                 <Input
-                  {...register('email')}
+                  {...register("email")}
                   label="Votre Email"
                   type="email"
                   name="email"
@@ -64,7 +56,7 @@ export default function Login() {
                 </small>
 
                 <Input
-                  {...register('password')}
+                  {...register("password")}
                   type="password"
                   label="Mot de passe"
                   name="password"
@@ -72,30 +64,8 @@ export default function Login() {
                 <small className="text-sm text-red-500">
                   {errors.password?.message}
                 </small>
-
-                {/* <Input
-                  onPointerEnterCapture={undefined}
-                  onPointerLeaveCapture={undefined}
-                  crossOrigin={undefined}
-                  {...register('password')}
-                  type="password"
-                  label="Mot de passe"
-                  name="mot de passe"
-                /> */}
               </div>
               <div className="flex flex-col justify-center items-center gap-1">
-                {/* <div className="">
-                  <Checkbox
-                    onPointerEnterCapture={undefined}
-                    onPointerLeaveCapture={undefined}
-                    crossOrigin={undefined}
-                    type="checkbox"
-                    {...register('checkbox')}
-                    label="Se souvenir de moi"
-                    name="checkbox"
-                  />
-                  <br />
-                </div> */}
                 <div className="mb-8 mt-4">
                   <Link
                     to="/login/reset-pass"
@@ -113,10 +83,8 @@ export default function Login() {
                   color="white"
                   className="mt-4 text-center font-normal"
                   placeholder={undefined}
-                  // onPointerEnterCapture={undefined}
-                  // onPointerLeaveCapture={undefined}
                 >
-                  Vous n'avez pas de compte?
+                  Vous n'avez pas de compte? <br />
                   <Link
                     to="/register"
                     className="font-medium text-light-blue-600 ml-4"

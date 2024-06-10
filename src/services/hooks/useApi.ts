@@ -15,19 +15,17 @@ export function useApi() {
     return config;
   });
 
-  // api.interceptors.response.use(
-  //   (response) => response
+  api.interceptors.response.use(
+    (response) => response,
 
-  //   async (error) => {
-  //     if (error.response) {
-  //       return error.response.data.error;
-  //     } else if (error.request) {
-  //       return error.request;
-  //     } else {
-  //       return error.config;
-  //     }
-  //   }
-  // );
+    async (error) => {
+      if (error.response && error.response.status === 401) {
+      }
+      if (error.response && error.response.status === 500) {
+      }
+      return Promise.reject(error);
+    }
+  );
 
   return api;
 }

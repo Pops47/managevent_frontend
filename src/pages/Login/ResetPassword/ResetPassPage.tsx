@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import ButtonDefault from "../../../components/ButtonDefault";
 import { InputDefault } from "../../../components/InputDefault";
+import { postEmailToResetPassword } from "../../../services/api/auth";
 import { ResetPassFormSchema } from "../../../services/schemas/ResetPasswordFormSchema";
 import { ResetPasswordForm } from "../../../services/types/ResetPasswordPagesType";
 
@@ -13,32 +14,26 @@ export default function ResetPassPage() {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<ResetPasswordForm>({
     resolver: yupResolver(ResetPassFormSchema),
   });
 
-  // A DECOMMENTER AU CABLAGE :
-
-  // const postData = async ({ email }: { email: string }): Promise<void> => {
-  //   try {
-  //     const response = await axios.post("/auth/resetPass", {
-  //       email: { email },
-  //     });
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  //gérer la récup de l'erreur si l'email n'existe pas
 
   const onSubmit: SubmitHandler<ResetPasswordForm> = async (data) => {
-    console.log(data);
-    // const response = await postData(data);
-    // if (response.status === 200) {
-    navigate("/login/check-email");
-    // }
+    try {
+      await postEmailToResetPassword(data.email);
+      navigate("/login/check-email");
+    } catch (error: any) {
+      if (error.response.data.message === "No user with this email") {
+        setError("email", {
+          type: "custom",
+          message: "L'email n'existe pas",
+        });
+      } else console.log(error);
+    }
   };
-
-  // en attente de postData, prévoir d'afficher un spinner avec un state isLoading
 
   return (
     <div className="flex h-[calc(100vh-60px)] items-center">

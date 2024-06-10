@@ -1,6 +1,3 @@
-import { Link } from "react-router-dom";
-import ButtonDefault from "../../../components/ButtonDefault";
-
 export default function CheckEmailPage() {
   return (
     <div className="flex h-[calc(100vh-60px)] items-center ">
@@ -13,9 +10,6 @@ export default function CheckEmailPage() {
           Veuillez vérifier votre boîte de réception et cliquer sur le lien
           permettant de réinitialiser votre mot de passe.
         </p>
-        <Link to="/" className="w-full">
-          <ButtonDefault>Retour</ButtonDefault>
-        </Link>
       </div>
     </div>
   );

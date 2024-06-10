@@ -1,17 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import { getevent } from '../services/api/event';
+import { getEvents } from '../services/api/event';
 import { DialogSelectEvent } from './Dialog/DialogSelectEvent';
 import { EventType, EventsByDate } from '../services/interfaces/EventInterface';
 
 export default function EventCardList() {
   const {
     data: events,
-    isLoading,
+    isPending,
     isError,
     error
-  } = useQuery<EventType[] | undefined>({
+  } = useQuery({
     queryKey: ['events'],
-    queryFn: () => getevent(),
+    queryFn: () => getEvents(),
     staleTime: 0
   });
 
@@ -33,7 +33,7 @@ export default function EventCardList() {
     return groupedEvents;
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isPending) return <div>Loading...</div>;
 
   if (isError) return <div>Error: {error.message}</div>;
 
