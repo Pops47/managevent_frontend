@@ -1,16 +1,10 @@
 import { Typography } from '@material-tailwind/react';
 import RadioDefault from './RadioDefault';
 import ButtonDefault from './ButtonDefault';
-
-export type TaskIdInterface = {
-  id: number;
-  name: string;
-  description: string;
-  skill_name: string;
-}[];
+import { TaskIdInterface } from '../services/interfaces/TaskInterface';
 
 export type FormRadioButtonPropsType = {
-  task_id: TaskIdInterface;
+  task_id: TaskIdInterface[];
   handleSubmit: (e: React.FormEvent) => void;
   handleChange: (evt: React.ChangeEvent<HTMLInputElement>) => void;
   value: number | null;

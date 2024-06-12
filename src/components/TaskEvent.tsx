@@ -5,28 +5,31 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Pencil from '../assets/pencil.svg';
 import { DialogUnsubscribeEvent } from './Dialog/DialogUnsubscribeEvent';
-import { DetailEventInterface } from '../services/interfaces/DetailEventInterface';
+import { EventDetailInterface } from '../services/interfaces/DetailEventInterface';
 import FormRadioButton from './FormRadioButton';
-import { UserTaskEventInterface } from '../services/interfaces/UserTaskEventInterface';
+import { deleteUserTaskEvent } from '../services/api/user_task_event';
 
 export type TaskEventPropsType = {
-  taskEvent: DetailEventInterface;
+  event: EventDetailInterface;
   handleSubmit: (e: React.FormEvent) => void;
   handleChange: (evt: React.ChangeEvent<HTMLInputElement>) => void;
   value: number | null;
-  users: UserTaskEventInterface[] | undefined;
-  toParticipe: UserTaskEventInterface | undefined;
+  user: UserWithIncludesInterface | undefined;
+  toParticipe: any;
+  usertaskId: number;
 };
 
 export default function TaskEvent({
-  taskEvent,
+  event,
   handleSubmit,
   handleChange,
   value,
-  users,
-  toParticipe
+  user,
+  toParticipe,
+  usertaskId
 }: TaskEventPropsType) {
-  const { task_id, event_id } = taskEvent;
+  const task_id = event.taskEvent.map((el) => el.task);
+
   const navigate = useNavigate();
   const [showTaskChoose, setShowTaskChoose] = useState(true);
 
@@ -34,34 +37,32 @@ export default function TaskEvent({
     setShowTaskChoose(false);
   };
 
+  const userTaskEvent = user?.userTaskEvent;
+
   const handleDelete = () => {
-    // delete_user_task_event(toParticipe?.user_id);
-    // const updateTaskEvent = {
-    //   volunteers_number: 3 + 1 //4:previousValue
-    // };
+    deleteUserTaskEvent(usertaskId, event.id, user?.id!);
+    // taskEvent volunteers number -1
     navigate('/events');
   };
 
   return (
     <>
       <div className="flex flex-col gap-7 items-center text-center mt-8 w-3/4 m-auto">
-        {toParticipe ? (
+        {toParticipe[0] !== undefined ? (
           <>
             <Typography variant="lead">
               Vous êtes inscrit à l'évènement :
             </Typography>
-            <EventDetail taskEvent={taskEvent} />
+            <EventDetail event={event} />
             {showTaskChoose ? (
               <>
                 <div>
                   <p className="underline">Votre mission</p>
                   <div className="flex gap-3 mt-3 justify-center ">
                     <p>
-                      {users
-                        ?.filter(
-                          (event) => event.user_id === toParticipe.user_id
-                        )
-                        .map((event) => event.task_id.title)}
+                      {userTaskEvent
+                        ?.filter((el) => el.event.id === event.id)
+                        .map((el) => el.task.name)}
                     </p>
                     <img src={Pencil} alt="" onClick={handleShowTaskChoose} />
                   </div>
@@ -82,9 +83,9 @@ export default function TaskEvent({
           </>
         ) : (
           <>
-            {event_id.status === 'open' && (
+            {event.status === 'Incomplete' && (
               <>
-                <EventDetail taskEvent={taskEvent} />
+                <EventDetail event={event} />
                 <FormRadioButton
                   handleSubmit={handleSubmit}
                   task_id={task_id}
@@ -93,9 +94,9 @@ export default function TaskEvent({
                 />
               </>
             )}
-            {event_id.status === 'close' && (
+            {event.status === 'Complete' && (
               <>
-                <EventDetail taskEvent={taskEvent} />
+                <EventDetail event={event} />
                 <ButtonDefault variant="disabled">Je participe</ButtonDefault>
               </>
             )}

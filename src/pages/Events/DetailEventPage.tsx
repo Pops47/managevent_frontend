@@ -1,67 +1,76 @@
 import { useEffect, useState } from 'react';
 import TaskEvent from '../../components/TaskEvent';
-import { get_task_event } from '../../services/api/task_event';
 import BackPreviousPage from '../../components/BackPreviousPage';
 import { useParams } from 'react-router-dom';
-import { DetailEventInterface } from '../../services/interfaces/DetailEventInterface';
-import { UserTaskEventInterface } from '../../services/interfaces/UserTaskEventInterface';
-import { get_user_task_event } from '../../services/api/user_task_event';
-// import { useNavigate } from 'react-router-dom';
+import { EventDetailInterface } from '../../services/interfaces/DetailEventInterface';
+import { useQuery } from '@tanstack/react-query';
+import { getEvents } from '../../services/api/event';
+import { getUser } from '../../services/api/user';
+import {
+  createUserTaskEvent,
+  deleteUserTaskEvent
+} from '../../services/api/user_task_event';
 
 export default function DetailEventPage() {
-  const [taskEvents, setTaskEvents] = useState<
-    DetailEventInterface[] | undefined
-  >([]);
-  const [users, setUsers] = useState<UserTaskEventInterface[] | undefined>([]);
+  const { data: events } = useQuery<EventDetailInterface[] | undefined>({
+    queryKey: ['events'],
+    queryFn: () => getEvents(),
+    staleTime: 0
+  });
+
+  const [user, setUser] = useState<UserWithIncludesInterface | undefined>();
   const [value, setValue] = useState<number | null>(null);
-  // const navigate = useNavigate();
   const eventId = useParams();
-  const taskEventId = taskEvents?.filter(
-    (el) => el.event_id.id === Number(eventId.id)
+  const taskEventId = events?.filter(
+    (event) => event.id === Number(eventId.id)
   );
 
-  const USER_ID = 2; // id user connecté
-  const toParticipe = users?.find(
-    (user) =>
-      user.user_id.id === USER_ID &&
-      user.event_id.id === taskEventId?.map((el) => el.event_id.id)[0]
+  let usertaskId = 0;
+  const userTaskEvent = user?.userTaskEvent;
+  if (taskEventId !== undefined) {
+    for (const event of taskEventId) {
+      if (userTaskEvent !== undefined) {
+        usertaskId = userTaskEvent
+          ?.filter((el) => el.event.id === event.id)
+          .map((el) => el.task.id)[0];
+      }
+    }
+  }
+  console.log('🚀 ~ DetailEventPage ~ usertaskId:', usertaskId);
+
+  const toParticipe = taskEventId?.map((el) =>
+    el.userTaskEvent
+      .map((el) => el.userId)
+      .map((el) => el)
+      .find((el) => el === user?.id)
   );
 
   useEffect(() => {
     const loadEvent = async () => {
-      const response = await get_task_event();
-      const response2 = await get_user_task_event();
-
-      setTaskEvents(response);
-      setUsers(response2);
+      const response2 = await getUser();
+      setUser(response2);
     };
     loadEvent();
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const newUserTaskEvent = {
+      userId: user?.id,
+      eventId: taskEventId![0].id,
+      taskId: value
+    };
+
     if (value === null) {
       alert('Veuillez choisir une tâche pour cet évènement');
+    } else if (toParticipe![0] !== undefined) {
+      deleteUserTaskEvent(usertaskId, taskEventId![0].id, user?.id!);
+      createUserTaskEvent(newUserTaskEvent);
+      alert('je particpe');
     } else {
-      const newUserTaskEvent = {
-        user_id: 1, // 1:token_User
-        event_id: 1, // 1:id de l'URL
-        task_id: value
-      };
-      const UpdateUserTaskEvent = {
-        task_id: value
-      };
-      const updateTaskEvent = {
-        volunteers_number: 4 - 1 //4:previousValue
-      };
-      if (toParticipe) {
-        console.log(UpdateUserTaskEvent);
-      } else {
-        console.log(newUserTaskEvent);
-        console.log(updateTaskEvent);
-      }
-      // postUser_task_event(newUserTaskEvent);
-      // navigate('/EVENT_DEVPUNK-65');
+      createUserTaskEvent(newUserTaskEvent);
+      // taskEvent volunteers number -1
     }
   };
 
@@ -72,15 +81,16 @@ export default function DetailEventPage() {
   return (
     <>
       <BackPreviousPage path="/events" />
-      {taskEventId?.map((taskEvent, index) => (
+      {taskEventId?.map((event, index) => (
         <TaskEvent
-          taskEvent={taskEvent}
+          event={event}
           key={index}
           handleSubmit={handleSubmit}
           handleChange={handleChange}
           value={value}
-          users={users}
+          user={user}
           toParticipe={toParticipe}
+          usertaskId={usertaskId}
         />
       ))}
     </>

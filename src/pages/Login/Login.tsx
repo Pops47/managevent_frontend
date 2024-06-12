@@ -1,18 +1,18 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Input, Typography } from "@material-tailwind/react";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import * as yup from "yup";
-import ButtonDefault from "../../components/ButtonDefault";
-import { loginUser } from "../../services/api/auth";
-import { LoginForm } from "../../services/interfaces/LoginForm";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Input, Typography } from '@material-tailwind/react';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import ButtonDefault from '../../components/ButtonDefault';
+import { loginUser } from '../../services/api/auth';
+import { LoginForm } from '../../services/interfaces/LoginForm';
 
 const dataSchema = yup.object({
   email: yup
     .string()
     .email("Votre e-mail n'est pas valide")
-    .required("Ce champ est obligatoire"),
-  password: yup.string().required("Ce champ est obligatoire !!"),
+    .required('Ce champ est obligatoire'),
+  password: yup.string().required('Ce champ est obligatoire !!')
 });
 
 export default function Login() {
@@ -21,16 +21,16 @@ export default function Login() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm<LoginForm>({
-    resolver: yupResolver(dataSchema),
+    resolver: yupResolver(dataSchema)
   });
 
   const onSubmit = async (values: LoginForm): Promise<any> => {
     const { token } = await loginUser(values);
     if (token) {
-      localStorage.setItem("authToken", token);
-      navigate("/events");
+      localStorage.setItem('authToken', token);
+      navigate('/events');
     }
   };
 
@@ -46,7 +46,7 @@ export default function Login() {
               <h2 className="mb-3 flex justify-center">Connexion</h2>
               <div className="mb-1 flex flex-col gap-3">
                 <Input
-                  {...register("email")}
+                  {...register('email')}
                   label="Votre Email"
                   type="email"
                   name="email"
@@ -56,7 +56,7 @@ export default function Login() {
                 </small>
 
                 <Input
-                  {...register("password")}
+                  {...register('password')}
                   type="password"
                   label="Mot de passe"
                   name="password"
