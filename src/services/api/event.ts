@@ -1,7 +1,11 @@
 import { eventsFaker } from "../../pages/Events/eventsFaker";
-import { eventDataFaker, eventsForCalendarFaker } from "../fakers/eventsFaker";
+import { eventDataFaker } from "../fakers/eventsFaker";
 import { useApi } from "../hooks/useApi";
-import { EventForCalendarInterface } from "../interfaces/EventInterface";
+import {
+  EventForCalendarInterface,
+  EventType,
+} from "../interfaces/EventInterface";
+import { transformIsoStringDateToDayAfter } from "../utils/DateDayFrFormat";
 
 const api = useApi();
 
@@ -9,7 +13,7 @@ export async function getEventDataForUpdateEventPage(
   eventId: string | undefined
 ) {
   try {
-    const data = eventDataFaker[Number(eventId)];
+    const data = eventDataFaker[Number(eventId) - 1];
     // REMPLACER par requete get sur (user_task_event JOIN events) by user_id
     //
     // const {data} = await axios.get(`/user-task-event/${user_id}`)
@@ -26,7 +30,6 @@ export async function getEvents() {
     const { data } = await api.get("/events");
     return data.data;
   } catch (err) {
-    console.log("ERROR");
     console.log(err);
   }
 }
@@ -44,17 +47,26 @@ export async function getEventId() {
   }
 }
 
-export async function findAllEventsForCalendar(): Promise<
-  EventForCalendarInterface[] | undefined
-> {
+export async function getEventsForCalendar() {
   try {
-    const data = await eventsForCalendarFaker;
-    //const { data } = await axios.get("/event");
-    // cf EventForCalendarrInterface to know how to convert "events" to "eventsForCalendar"
-    // (dates, status, etc..)
-    return data;
+    const { data } = await api.get("/events");
+    const events: EventType[] = data.data;
+
+    const eventsForCalendar = events.map(
+      (event: EventType): EventForCalendarInterface => {
+        let newEndDate = transformIsoStringDateToDayAfter(event.endDate);
+        // this is because in fullcalendar 'end' is exclusive, so we have to give it the day after endDate
+        return {
+          id: event.id.toString(),
+          title: event.title,
+          start: event.startDate.split("T")[0],
+          end: newEndDate.split("T")[0],
+          status: event.status,
+        };
+      }
+    );
+    return eventsForCalendar;
   } catch (err) {
-    console.log("ERROR");
     console.log(err);
   }
 }

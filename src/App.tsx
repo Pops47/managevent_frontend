@@ -1,6 +1,5 @@
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useState } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/NavBar/NavBar";
 import NavBarAdmin from "./components/NavBar/NavBarAdmin";
@@ -28,28 +27,21 @@ export default function App() {
   // checking route path to display NavBar or NavBarAdmin
   const { pathname } = useLocation();
   const isAdminPath = new RegExp("^/admin");
-  const isPanelAdmin = pathname.match(isAdminPath);
-  //
+  const isPanelAdmin = isAdminPath.test(pathname);
+  // checking route path to display NavBar or Not
   const isContactPath = new RegExp("/contact");
   const isRegisterPath = new RegExp("/register");
   const isLoginPath = new RegExp("^/login");
-
   const isNotNavBarPage =
     pathname === "/" ||
-    pathname.match(isLoginPath) ||
-    pathname.match(isRegisterPath) ||
-    pathname.match(isContactPath);
-
-  // ajouter la logique pour que ce state varie en fonction du rôle du User connecté
-  const [isAdminLogged] = useState(true);
+    pathname === "/404" ||
+    isLoginPath.test(pathname) ||
+    isRegisterPath.test(pathname) ||
+    isContactPath.test(pathname);
 
   return (
     <>
-      {isNotNavBarPage ? null : isPanelAdmin ? (
-        <NavBarAdmin />
-      ) : (
-        <NavBar isAdminLogged={isAdminLogged} />
-      )}
+      {isNotNavBarPage ? null : isPanelAdmin ? <NavBarAdmin /> : <NavBar />}
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/contact" element={<Contact />} />
@@ -65,30 +57,38 @@ export default function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/update" element={<UpdateProfilePage />} />
         <Route element={<PrivateAdminRoute />}>
-          <Route path="/events" element={<EventsPage isPanelAdmin={false} />} />
+          <Route
+            path="/events"
+            element={<EventsPage isPanelAdmin={isPanelAdmin} />}
+          />
           <Route
             path="/events/calendar"
-            element={<CalendarPage isPanelAdmin={false} />}
+            element={<CalendarPage isPanelAdmin={isPanelAdmin} />}
           />
           <Route path="/events/:id" element={<DetailEventPage />} />
           <Route path="/notifications" element={<NotificationPage />} />
           <Route
             path="/admin/events"
-            element={<EventsPage isPanelAdmin={true} />}
+            element={<EventsPage isPanelAdmin={isPanelAdmin} />}
           />
           <Route
             path="/admin/events/calendar"
-            element={<CalendarPage isPanelAdmin={true} />}
+            element={<CalendarPage isPanelAdmin={isPanelAdmin} />}
           />
           <Route
-            path="/admin/events/create-update/:eventId?"
+            path="/admin/events/create-update"
+            element={<CreateUpdateEventPage />}
+          />
+          <Route
+            path="/admin/events/create-update/:eventId"
             element={<CreateUpdateEventPage />}
           />
         </Route>
         <Route path="/admin/tasks" element={<TaskList />} />
         <Route path="/admin/users" element={<UserList />} />
 
-        <Route path="*" element={<Page404 />} />
+        <Route path="/404" element={<Page404 />} />
+        <Route path="*" element={<Navigate replace to="/404" />} />
       </Routes>
       <ReactQueryDevtools />
     </>

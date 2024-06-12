@@ -75,23 +75,21 @@ export default function CreateUpdateEventPage() {
 
   // prefill form with eventData & init registeredTaskNames and selectDefaultValue with eventData when update
   useEffect(() => {
-    console.log(1);
     if (!isCreateForm) {
       reset(eventData);
     }
-  }, [eventData, isCreateForm, reset]);
+  }, [isCreateForm, eventData]);
 
   useEffect(() => {
-    console.log(2);
     if (eventData) {
-      eventData.tasks.forEach((task: { taskName: string }) =>
-        setPreRegisteredTaskNames([...preRegisteredTaskNames, task.taskName])
+      const taskNames = eventData.tasks.map(
+        (task: { taskName: string }) => task.taskName
       );
+      setPreRegisteredTaskNames([...preRegisteredTaskNames, ...taskNames]);
     }
-  }, [eventData, preRegisteredTaskNames]);
+  }, [eventData]);
 
   useEffect(() => {
-    console.log(3);
     if (tasksList) {
       const filteredTasksList = tasksList.filter(
         (task) => !preRegisteredTaskNames.includes(task.name)
@@ -102,7 +100,6 @@ export default function CreateUpdateEventPage() {
     }
   }, [preRegisteredTaskNames, tasksList]);
 
-  // submit form
   const onSubmit = (data: CreateEventFormType) => {
     console.log(data);
     // A DECOMMENTER AU CABLAGE:
@@ -112,7 +109,7 @@ export default function CreateUpdateEventPage() {
     // else {
     //   const response = axios.post("/event", data)
     //   }
-    navigate("/admin/event");
+    navigate("/admin/events");
   };
 
   return (
@@ -215,7 +212,7 @@ export default function CreateUpdateEventPage() {
         size="xs"
         className="rounded-xl"
       >
-        <form className="flex flex-col gap-4 bg-darkBlueDP border-dp p-large text-white">
+        <form className="flex flex-col gap-4 bg-darkBlueDP  p-large text-white">
           <div className="flex justify-end">
             <FontAwesomeIcon
               icon={faXmark}

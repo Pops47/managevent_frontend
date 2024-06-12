@@ -22,11 +22,13 @@ export interface EventDataFaker {
 export interface EventForCalendarInterface {
   id: string;
   title: string;
-  start: Date | string;
-  end: Date | string;
-  // ATTENTION : si l'évènement à lieu du 22 au 23, start doit être égal à 22 mais end doit être égal à 24 pour que l'affichage soit correct
+  start: string;
+  end: string;
+  // ATTENTION : sur fullcalendar end est exclusif
+  //=> si l'évènement à lieu du 22 au 23, start doit être égal à 22 mais end doit être égal à 24
+  //pour que l'affichage soit correct
   // (end doit donc être égal à startEnd + 1)
-  status: 'open' | 'close';
+  status: "Complete" | "Incomplete";
 }
 
 export type EventType = {
@@ -36,15 +38,16 @@ export type EventType = {
   endDate: string;
   location: string;
   description: string;
-  status: string;
+  status: "Complete" | "Incomplete";
 };
 
 export type EventsByDate = {
   date: string;
-  events: EventType[];
+  events: EventForCalendarInterface[];
 };
 export type GoupPropsType = {
   group: EventsByDate;
+  isPanelAdmin: boolean;
 };
 export type CardEventPropsType = {
   group: EventsByDate;

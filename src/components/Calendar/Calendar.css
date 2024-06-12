@@ -39,6 +39,9 @@ td {
   color: white;
   text-transform: capitalize;
 }
+.fc-event {
+  pointer-events: none;
+}
 .fc-event-title-container {
   padding-left: 0.1rem;
 }

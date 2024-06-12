@@ -1,7 +1,7 @@
-import { Card, CardBody, Typography } from '@material-tailwind/react';
-import closeEvent from '../assets/closeEvent.svg';
-import openEvent from '../assets/openEvent.svg';
-import { CardEventPropsType } from '../services/interfaces/EventInterface';
+import { Card, CardBody, Typography } from "@material-tailwind/react";
+import closeEvent from "../assets/closeEvent.svg";
+import openEvent from "../assets/openEvent.svg";
+import { CardEventPropsType } from "../services/interfaces/EventInterface";
 
 export default function CardEvent({ group, onClick }: CardEventPropsType) {
   return (
@@ -16,8 +16,8 @@ export default function CardEvent({ group, onClick }: CardEventPropsType) {
               <Typography variant="h5" className="text-center mr-5 ">
                 {event.title}
               </Typography>
-              {event.status === 'Incomplete' && <img src={openEvent} alt="" />}
-              {event.status === 'complete' && <img src={closeEvent} alt="" />}
+              {event.status === "Incomplete" && <img src={openEvent} alt="" />}
+              {event.status === "Complete" && <img src={closeEvent} alt="" />}
             </div>
           ))}
         </CardBody>
