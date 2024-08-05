@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getUser } from '../../services/api/user';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProfileEvents() {
   const {
@@ -13,6 +14,8 @@ export default function ProfileEvents() {
   });
   const userTaskEvents = user?.userTaskEvent;
 
+  const navigate = useNavigate();
+
   return isLoading ? (
     <p>Loader</p>
   ) : isError ? (
@@ -21,7 +24,11 @@ export default function ProfileEvents() {
     <div className="flex flex-col gap-4 md:gap-6">
       {userTaskEvents && userTaskEvents.length > 0 ? (
         userTaskEvents.map((userTaskEvent, index) => (
-          <div key={index} className="border-dp p-small">
+          <div
+            onClick={() => navigate(`/events/${userTaskEvent.event.id} `)}
+            key={index}
+            className="border-dp p-small cursor-pointer"
+          >
             <p className="text-sm md:text-lg">
               {new Date(userTaskEvent.event.startDate).toLocaleDateString()}
             </p>

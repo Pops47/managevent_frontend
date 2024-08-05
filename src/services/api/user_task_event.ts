@@ -18,7 +18,6 @@ export async function get_user_task_event() {
 
 export async function delete_user_task_event(id: number) {
   try {
-    console.log(id);
     // const userToDelete = user_task_event_Faker?.find(
     //   (user) => user.user_id === Number(id)
     // );

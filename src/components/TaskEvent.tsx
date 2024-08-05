@@ -8,6 +8,7 @@ import { DialogUnsubscribeEvent } from './Dialog/DialogUnsubscribeEvent';
 import { EventDetailInterface } from '../services/interfaces/DetailEventInterface';
 import FormRadioButton from './FormRadioButton';
 import { deleteUserTaskEvent } from '../services/api/user_task_event';
+import { putTaskEvent } from '../services/api/task_event';
 
 export type TaskEventPropsType = {
   event: EventDetailInterface;
@@ -39,16 +40,23 @@ export default function TaskEvent({
 
   const userTaskEvent = user?.userTaskEvent;
 
-  const handleDelete = () => {
-    deleteUserTaskEvent(usertaskId, event.id, user?.id!);
-    // taskEvent volunteers number -1
-    navigate('/events');
+  const handleDelete = async () => {
+    const ActualtaskEventObject = event.taskEvent
+      .map((el) => el)
+      .find((el) => el.taskId === usertaskId);
+
+    const addVolunteerNumber = {
+      volunteerNumber: ActualtaskEventObject?.volunteerNumber! + 1
+    };
+    await deleteUserTaskEvent(usertaskId, event.id, user?.id!);
+    await putTaskEvent(usertaskId, event.id, addVolunteerNumber);
+    navigate('/profile');
   };
 
   return (
     <>
       <div className="flex flex-col gap-7 items-center text-center mt-8 w-3/4 m-auto">
-        {toParticipe[0] !== undefined ? (
+        {toParticipe !== undefined ? (
           <>
             <Typography variant="lead">
               Vous êtes inscrit à l'évènement :

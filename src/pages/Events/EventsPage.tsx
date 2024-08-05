@@ -1,24 +1,24 @@
-import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, useNavigate } from "react-router-dom";
-import closeEvent from "../../assets/closeEvent.svg";
-import openEvent from "../../assets/openEvent.svg";
-import ButtonDefault from "../../components/ButtonDefault";
-import EventCardList from "../../components/EventCardList";
+import { faCalendarDays } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link, useNavigate } from 'react-router-dom';
+import closeEvent from '../../assets/closeEvent.svg';
+import openEvent from '../../assets/openEvent.svg';
+import ButtonDefault from '../../components/ButtonDefault';
+import EventCardList from '../../components/EventCardList';
 
 export default function EventsPage({
-  isPanelAdmin,
+  isPanelAdmin
 }: {
   isPanelAdmin: boolean;
 }) {
   const navigate = useNavigate();
   function getToday() {
     const today = new Date();
-    return today.toLocaleDateString("fr-FR", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return today.toLocaleDateString('fr-FR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   }
   const today = getToday();
@@ -26,17 +26,17 @@ export default function EventsPage({
   return (
     <div className="flex flex-col md:w-2/3 m-large md:my-8 md:mx-auto gap-4 ">
       <ButtonDefault
-        className={isPanelAdmin ? "" : "hidden"}
-        onClick={() => navigate("/admin/events/create-update")}
+        className={isPanelAdmin ? '' : 'hidden'}
+        onClick={() => navigate('/admin/events/create-update')}
       >
         Créer un nouvel évènement
       </ButtonDefault>
       <div className="flex justify-between mt-2">
         <p className="mb-4 bg-hoverBlueDP p-1 rounded">
-          Date du jour :{" "}
-          <span style={{ textTransform: "capitalize" }}>{today}</span>
+          Date du jour :{' '}
+          <span style={{ textTransform: 'capitalize' }}>{today}</span>
         </p>
-        <Link to={isPanelAdmin ? "/admin/events/calendar" : "/events/calendar"}>
+        <Link to={isPanelAdmin ? '/admin/events/calendar' : '/events/calendar'}>
           <FontAwesomeIcon icon={faCalendarDays} size="xl" />
         </Link>
       </div>
