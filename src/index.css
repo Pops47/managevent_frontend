@@ -1,3 +1,127 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /* custom font-size */
+  .h1-size {
+    @apply text-3xl font-bold;
+  }
+  .h2-size {
+    @apply text-2xl font-bold;
+  }
+  .h3-size {
+    @apply text-xl font-bold;
+  }
+  .p-size {
+    @apply text-base;
+  }
+  /* custom border */
+  .border-dp {
+    @apply border-solid border-2 border-orangeDP rounded-xl;
+  }
+  /* custom margin */
+  .m-small {
+    @apply m-4;
+  }
+  .m-large {
+    @apply m-6;
+  }
+  .mx-small {
+    @apply mx-4;
+  }
+  .mx-large {
+    @apply mx-6;
+  }
+  .ml-small {
+    @apply ml-4;
+  }
+  .ml-large {
+    @apply ml-6;
+  }
+  .mr-small {
+    @apply mr-4;
+  }
+  .mr-large {
+    @apply mr-6;
+  }
+  .my-small {
+    @apply my-4;
+  }
+  .my-large {
+    @apply my-6;
+  }
+  .mt-small {
+    @apply mt-4;
+  }
+  .mt-large {
+    @apply mt-6;
+  }
+  .mb-small {
+    @apply mb-4;
+  }
+  .mb-large {
+    @apply mb-6;
+  }
+  /* custom padding */
+  .p-small {
+    @apply p-4;
+  }
+  .p-large {
+    @apply p-6;
+  }
+  .px-small {
+    @apply px-4;
+  }
+  .px-large {
+    @apply px-6;
+  }
+  .pl-small {
+    @apply pl-4;
+  }
+  .pl-large {
+    @apply pl-6;
+  }
+  .pr-small {
+    @apply pr-4;
+  }
+  .pr-large {
+    @apply pr-6;
+  }
+  .py-small {
+    @apply py-4;
+  }
+  .py-large {
+    @apply py-6;
+  }
+  .pt-small {
+    @apply pt-4;
+  }
+  .pt-large {
+    @apply pt-6;
+  }
+  .pb-small {
+    @apply pb-4;
+  }
+  .pb-large {
+    @apply pb-6;
+  }
+  /* ... */
+}
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container,
+.react-datepicker__input-container input {
+  display: block;
+  width: 100%;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: #ffffff;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 20px 20px #23232329;
+}

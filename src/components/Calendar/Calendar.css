@@ -1,0 +1,90 @@
+.fc {
+  font-family: "Inter", sans-serif;
+}
+.fc-day {
+  border-radius: 10px;
+}
+
+.fc-daygrid-day:hover {
+  background-color: #2e3461 !important;
+  cursor: pointer;
+}
+
+.fc-theme-standard .fc-popover,
+.fc-day-today {
+  background-color: #4f5aa9 !important;
+}
+.fc-scrollgrid {
+  background-color: #0b1247;
+  border: solid 3px #ffb647 !important;
+  border-radius: 15px;
+  color: white;
+}
+table,
+thead,
+tr,
+th,
+td {
+  border: none !important;
+}
+.fc-col-header-cell {
+  padding: 1rem !important;
+  padding-bottom: 2rem !important;
+}
+.fc-daygrid-day-top {
+  display: flex;
+  justify-content: center;
+}
+.fc-toolbar-title {
+  color: white;
+  text-transform: capitalize;
+}
+.fc-event {
+  pointer-events: none;
+}
+.fc-event-title-container {
+  padding-left: 0.1rem;
+}
+.fc-event-title {
+  text-overflow: ellipsis;
+  font-weight: bold;
+}
+.fc-button-primary {
+  background-color: #2e3461 !important;
+}
+.fc-button-primary:hover:enabled {
+  background-color: #4f5aa9 !important;
+}
+.fc-button-primary:disabled {
+  display: none;
+}
+
+@media screen and (max-width: 550px) {
+  .fc-event-title-container {
+    padding: 0;
+  }
+  .fc-toolbar-title {
+    font-size: 1.25rem !important;
+  }
+  .fc-daygrid-more-link {
+    padding-left: 1rem !important;
+    text-overflow: ellipsis;
+  }
+}
+@media screen and (max-width: 430px) {
+  .fc-toolbar-title {
+    font-size: 1rem !important;
+  }
+  .fc-col-header-cell-cushion {
+    font-size: 0.8rem;
+  }
+  .fc-col-header-cell {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+@media screen and (max-width: 390px) {
+  .fc-toolbar-title {
+    font-size: 0.8rem !important;
+  }
+}
