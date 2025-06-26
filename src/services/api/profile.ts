@@ -71,7 +71,7 @@ export async function getUserProfileId() {
   }
 }
 
-export async function putPorfileUser(updateProfile: any) {
+export async function putProfileUser(updateProfile: any) {
   try {
     const { data } = await api.patch(`profiles`, updateProfile);
 
