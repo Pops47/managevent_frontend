@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Dialog, Input } from "@material-tailwind/react";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -12,7 +13,7 @@ import ButtonDefault from "../../../components/ButtonDefault";
 import DatePickerDefault from "../../../components/DatePickerDefault";
 import { InputDefault } from "../../../components/InputDefault";
 import { TextareaDefault } from "../../../components/TextareaDefault";
-import { getEventDataForUpdateEventPage } from "../../../services/api/event";
+import { getEventById } from "../../../services/api/event";
 import { getTasksList } from "../../../services/api/task";
 import { CreateEventFormSchema } from "../../../services/schemas/CreateEventFormSchema";
 import { CreateEventFormType } from "../../../services/types/CreateEventPageType";
@@ -30,9 +31,7 @@ export default function CreateUpdateEventPage() {
 
   // States to handle select options in modal form
   const [selectDefaultValue, setSelectDefaultValue] = useState<string>("");
-  const [preRegisteredTaskNames, setPreRegisteredTaskNames] = useState<
-    string[]
-  >([]);
+  const [preRegisteredTaskNames, setPreRegisteredTaskNames] = useState<string[]>([]);
 
   // react-hook-form and yup validation
   const {
@@ -68,7 +67,7 @@ export default function CreateUpdateEventPage() {
   //eventData request (when update form)
   const { data: eventData } = useQuery({
     queryKey: ["eventData"],
-    queryFn: () => getEventDataForUpdateEventPage(eventId),
+    queryFn: () => getEventById(eventId),
     staleTime: 0,
     enabled: !isCreateForm,
   });
@@ -82,18 +81,14 @@ export default function CreateUpdateEventPage() {
 
   useEffect(() => {
     if (eventData) {
-      const taskNames = eventData.tasks.map(
-        (task: { taskName: string }) => task.taskName
-      );
+      const taskNames = eventData.tasks.map((task: { taskName: string }) => task.taskName);
       setPreRegisteredTaskNames([...preRegisteredTaskNames, ...taskNames]);
     }
   }, [eventData]);
 
   useEffect(() => {
     if (tasksList) {
-      const filteredTasksList = tasksList.filter(
-        (task) => !preRegisteredTaskNames.includes(task.name)
-      );
+      const filteredTasksList = tasksList.filter((task) => !preRegisteredTaskNames.includes(task.name));
       if (filteredTasksList.length > 0) {
         setSelectDefaultValue(filteredTasksList[0].name);
       }
@@ -103,31 +98,19 @@ export default function CreateUpdateEventPage() {
   const onSubmit = (data: CreateEventFormType) => {
     console.log(data);
     // A DECOMMENTER AU CABLAGE:
-    // if (isUpdateMode) {
-    //   const response = axios.put(`/event/${eventId}`, data)
-    //   }
-    // else {
-    //   const response = axios.post("/event", data)
-    //   }
+    if (!isCreateForm) {
+      axios.put(`/event/${eventId}`, data);
+    } else {
+      axios.post("/event", data);
+    }
     navigate("/admin/events");
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-4 mx-large w-80 sm:w-96 m-auto my-12 md:my-16"
-    >
-      <h1 className="h1-size mb-4">
-        {isCreateForm ? "Créer un événement" : "Modifier l'événement"}
-      </h1>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 mx-large w-80 sm:w-96 m-auto my-12 md:my-16">
+      <h1 className="h1-size mb-4">{isCreateForm ? "Créer un événement" : "Modifier l'événement"}</h1>
 
-      <InputDefault
-        label="Nom"
-        name="title"
-        type="text"
-        register={register}
-        errors={errors}
-      />
+      <InputDefault label="Nom" name="title" type="text" register={register} errors={errors} />
       <DatePickerDefault
         errors={errors}
         setError={setError}
@@ -135,19 +118,8 @@ export default function CreateUpdateEventPage() {
         startDateWhenUpdate={eventData?.startDate}
         endDateWhenUpdate={eventData?.endDate}
       />
-      <InputDefault
-        label="Adresse"
-        name="adress"
-        type="text"
-        register={register}
-        errors={errors}
-      />
-      <TextareaDefault
-        label="Description"
-        name="description"
-        register={register}
-        errors={errors}
-      />
+      <InputDefault label="Adresse" name="adress" type="text" register={register} errors={errors} />
+      <TextareaDefault label="Description" name="description" register={register} errors={errors} />
       <p className="underline">Tâches associées : </p>
 
       {registeredTasks && registeredTasks.length > 0 ? (
@@ -156,18 +128,13 @@ export default function CreateUpdateEventPage() {
             {registeredTask.taskName !== "" ? (
               <li className="flex justify-between">
                 <p>
-                  {registeredTask.taskName} - {registeredTask.volunteerNumber}{" "}
-                  bénévole(s)
+                  {registeredTask.taskName} - {registeredTask.volunteerNumber} bénévole(s)
                 </p>
                 <FontAwesomeIcon
                   onClick={(e) => {
                     e.preventDefault();
                     remove(index);
-                    setPreRegisteredTaskNames((preRegisteredTaskNames) =>
-                      preRegisteredTaskNames.filter(
-                        (taskName) => taskName !== registeredTask.taskName
-                      )
-                    );
+                    setPreRegisteredTaskNames((preRegisteredTaskNames) => preRegisteredTaskNames.filter((taskName) => taskName !== registeredTask.taskName));
                   }}
                   icon={faTrashCan}
                   className="hover:cursor-pointer"
@@ -179,11 +146,7 @@ export default function CreateUpdateEventPage() {
       ) : (
         <p>Aucune tâche associée à cet événement</p>
       )}
-      {errors && (
-        <small className="text-red-600 ml-small">
-          {errors.tasks?.root?.message}
-        </small>
-      )}
+      {errors && <small className="text-red-600 ml-small">{errors.tasks?.root?.message}</small>}
 
       {tasksList && preRegisteredTaskNames.length !== tasksList.length ? (
         <ButtonDefault
@@ -198,8 +161,7 @@ export default function CreateUpdateEventPage() {
         </ButtonDefault>
       ) : (
         <small className="text-redDP">
-          Pas d'autres tâches disponibles. Vous pouvez créer de nouvelles tâche
-          depuis l'espace "Gestion tâches" du panel admin.
+          Pas d'autres tâches disponibles. Vous pouvez créer de nouvelles tâche depuis l'espace "Gestion tâches" du panel admin.
         </small>
       )}
 
@@ -223,9 +185,7 @@ export default function CreateUpdateEventPage() {
               }}
             />
           </div>
-          <h2 className="h2-size text-center mb-4">
-            Ajout d'une tâche à l'événement
-          </h2>
+          <h2 className="h2-size text-center mb-4">Ajout d'une tâche à l'événement</h2>
           <select
             id="taskName"
             {...register(`tasks.${fields.length - 1}.taskName`)}
@@ -253,10 +213,7 @@ export default function CreateUpdateEventPage() {
             <ButtonDefault
               onClick={(e) => {
                 e.preventDefault();
-                setPreRegisteredTaskNames([
-                  ...preRegisteredTaskNames,
-                  selectDefaultValue,
-                ]);
+                setPreRegisteredTaskNames([...preRegisteredTaskNames, selectDefaultValue]);
                 handleOpen();
                 clearErrors("tasks");
               }}
@@ -279,10 +236,7 @@ export default function CreateUpdateEventPage() {
       <ButtonDefault type="submit" variant="primary">
         Valider
       </ButtonDefault>
-      <ButtonDefault
-        onClick={() => navigate("/admin/events")}
-        variant="secondary"
-      >
+      <ButtonDefault onClick={() => navigate("/admin/events")} variant="secondary">
         Annuler
       </ButtonDefault>
     </form>
