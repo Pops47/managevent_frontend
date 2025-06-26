@@ -46,6 +46,9 @@ export default function CreateUpdateEventPage() {
     clearErrors,
   } = useForm<CreateEventFormType>({
     resolver: yupResolver(CreateEventFormSchema),
+    defaultValues: {
+      tasks: [],
+    },
   });
 
   // display missions in main form before submit

@@ -6,5 +6,5 @@ export type CreateEventFormType = {
   endDate: Date;
   adress: string;
   description: string;
-  tasks?: TaskCreateEventInterface[];
+  tasks: TaskCreateEventInterface[];
 };
